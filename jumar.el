@@ -449,7 +449,7 @@ If new child of parent would be nil and other children exist, they will be
 
 NODE must be in TREE.  Hence, TREE must not be empty."
   ;; Test
-  (unless (jumar:node<= (jumar:tree-root tree) node)
+  (unless (jumar:tree-has-node? tree node)
     (lwarn 'jmuar :error "`jumar:tree-delete-node!': argument out of range.")
     (error "argument out of range."))
   (let1 node (or node (jumar:tree-current tree))
@@ -1115,7 +1115,7 @@ revive jumarkers in it.")
 ;;; Auxiliary functions: get appropriate set
 
 (defun helm-jumar:source->jm-set-type (source)
-  ;; Is there better way?
+  ;; Is there a better way?
   (let1 name (helm-attr 'name source)
     (cond ((string= name "Jumarkers in tree") 'tree)
           ((string= name "Jumarkers in list") 'list)
@@ -1218,6 +1218,7 @@ not string."
 (defvar *helm-jumar-jumarkers-tree-cache* nil)
 (defvar *helm-jumar-jumarkers-list-cache* nil)
 (defvar *helm-jumar-tree-next-candidate-focus* nil)
+(defvar *helm-jumar-list-next-candidate-focus* nil)
 
 ;; (defun helm-jumar:make-candidates (tree &optional focused-node _)
 ;;   (destructuring-bind (node-list* current-index*) (jumar:tree-breadcrumbs+index tree 'identity)
