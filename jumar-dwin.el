@@ -56,7 +56,6 @@ whose state is not 'available.  Otherwise try to reopen with
 ;;;
 
 (defvar jumar-dwin-action-control-alist
-; (setq jumar-dwin-action-control-alist
   '((:current-set . nil)
     (:add-set . both)
     (:jump-set . tree)
@@ -194,7 +193,7 @@ Side effect: if jump success, set current node of SET to that one."
 
 (defadvice helm-update (after helm-jumar-dwin-update activate)
   "Enable preselect with REAL at the beginning of `helm-jumar-dwin-jumarkers'."
-  (when *helm-jumar-dwin-update-enabled*
+  (when (and *helm-jumar-dwin-update-enabled* *helm-jumar-dwin-update-preselect-node*)
     (helm-jumar:preselect-with-real *helm-jumar-dwin-update-preselect-node* 'eq t)
     (setq *helm-jumar-dwin-update-enabled* nil)))
 
