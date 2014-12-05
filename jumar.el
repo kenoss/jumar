@@ -1280,13 +1280,13 @@ not string."
   (if (not current-prefix-arg)
       (progn
         (jumar:jumarker-goto (jumar:node-content node))
-        (helm-highlight-current-line)))
+        (helm-highlight-current-line))
       (let1 next-preselect (or (jumar:node-child node) (jumar:node-parent node))
         (jumar:tree-delete-node! (helm-jumar:get-set-containing-node node) node)
         (helm-jumar-force-update)
         (when next-preselect
           (helm-jumar:preselect-with-real next-preselect 'eq t))
-        (jumar:message "1 jumarker deleted.")))
+        (jumar:message "1 jumarker deleted."))))
 
 (defun helm-jumar-delete-marked-nodes (_)
   "Delete selected jumarkers."
