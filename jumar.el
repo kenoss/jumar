@@ -101,7 +101,6 @@ The default value is `jumar-default-revive-marker'."
   :group 'jumar
   :type 'function)
 
-;; DELETE?
 (defcustom jumar-y-or-n-p 'y-or-n-p
   "`y-or-n-p' used in helm-jumar session.
 If function, it must be like `y-or-n-p'.
@@ -721,9 +720,6 @@ For example, if ROOT has less than or equal to LIMIT elements, return value is `
 
 (defun jumar-reduce-list-tree-size (tree)
   "reduce-size-function of TREE without no branches."
-  ;; DELETE
-  ;; (erfi:$ jumar:tree-set-new-root! tree $
-  ;;         jumar-reduce-tree-size-algorithm (jumar:tree-root tree) (car (jumar:tree-quota tree))))
   (let1 new-root (let1 limit (car (jumar:tree-quota tree))
                    (erfi:let lp ((node (jumar:tree-root tree))
                                  (n (jumar:tree-size tree)))
@@ -731,14 +727,6 @@ For example, if ROOT has less than or equal to LIMIT elements, return value is `
                          node
                          (lp (jumar:node-child node (- n 1))))))
     (jumar:tree-set-new-root! tree new-root)))
-
-;; DELETE
-;; (defun jumar-default-reduce-list-tree-size-algorithm (root limit size)
-;;   "`jumar-reduce-tree-size-algorithm' for tree without no branches."
-;;   (erfi:let lp ((node root) (n size) (res '()))
-;;     (if (<= n limit)
-;;         res
-;;         (lp (jumar:node-child node) (- n 1) (cons node res)))))
 
 
 
@@ -929,19 +917,6 @@ Keys are :file-path, :buffer-name, :point, :winstart, :line, :column."
       (:column . ,column))))
 
 
-;;; String representation
-;; DELETE?
-(defun jumar:jumarker-marker->string (jm)
-  (funcall jumar-marker-string-furction (jumar:jumarker-marker jm)))
-(defun jumar:jumarker-time->string (jm)
-  (funcall jumar-time-string-furction (jumar:jumarker-time jm)))
-
-(defun jumar:marker-string-default (marker)
-  (buffer-name (marker-buffer marker)))
-(defun jumar:time-string-default (marker)
-  (buffer-name (marker-buffer marker)))
-
-
 ;;; Hooks
 (defvar *jumar:observed-jumarker-list* '()
   "List of jumarkers observed to guarantee states of markers are correct.
@@ -983,17 +958,6 @@ revive jumarkers in it.")
 
 (defvar *jumar:jm-tree* (jumar:make-tree 'jumar:jumarker-delete))
 (defvar *jumar:jm-list* (jumar:make-tree 'jumar:jumarker-delete nil 'jumar-reduce-list-tree-size))
-
-(defvar jumar-dwin-action-control-alist
-  '((:current-set . nil)
-    (:add-set . both)
-    (:jump-set . tree)
-    (:helm-set . list+tree)
-    (:helm-preselect . tree)))
-
-;; DELETE?
-(defvar jumar-marker-string-furction 'jumar:marker-string-default)
-(defvar jumar-time-string-furction 'jumar:time-string-default)
 
 (defun jumar-init ()
   (progn
@@ -1129,16 +1093,6 @@ revive jumarkers in it.")
     ((list) *jumar:jm-list*)))
 
 (defun helm-jumar:get-set-containing-node (node)
-  ;; (let1 jm-sets (mapcar 'helm-jumar:source->jm-set (helm-get-sources))
-  ;;   (erfi:let lp ((sets jm-sets))
-  ;;     (if (null sets)
-  ;;         (progn
-  ;;           (lwarn 'jumar :error "`helm-jumar-delete-marked-nodes': source not found")
-  ;;           (error "`helm-jumar-delete-marked-nodes': source not found"))
-  ;;         (let1 s (car sets)
-  ;;           (if (jumar:tree-has-node? s node)
-  ;;               (jumar:tree-delete-node! s node)
-  ;;               (lp (cdr sets)))))))
   (let1 jm-sets (mapcar 'helm-jumar:source->jm-set (helm-get-sources))
     (loop for s in jm-sets
           when (jumar:tree-has-node? s node)
@@ -1220,109 +1174,6 @@ not string."
 (defvar *helm-jumar-tree-next-candidate-focus* nil)
 (defvar *helm-jumar-list-next-candidate-focus* nil)
 
-;; (defun helm-jumar:make-candidates (tree &optional focused-node _)
-;;   (destructuring-bind (node-list* current-index*) (jumar:tree-breadcrumbs+index tree 'identity)
-;;     (destructuring-bind (node-list current-index)
-;;         (if (not *helm-jumar-candidate-number-limit*)
-;;             `(,node-list* ,currnet-index*)
-;;             (destructuring-bind (a b) *helm-jumar-candidate-number-limit*
-;;               (let1 d (max 0 (- current-index* (+ a 1)))
-;;                 `(,(erfi:$ erfi:take* <> (+ a b 1) $ erfi:drop node-list* d)
-;;                   ,(- current-index* d)))))
-;;       (destructuring-bind (buf-name-list line-list column-list text-list)
-;;           (erfi:unzip4
-;;            (mapcar (erfi:$ cdddr $ jumar:jumarker->position-datum $ jumar:node-content $)
-;;                    node-list))
-;;         (let* ((indicator-list `(,@(make-list current-index " ") "*" ,@(erfi:circular-list " ")))
-;;                (branch-str-list (mapcar 'jumar:node->branch-string node-list))
-;;                (line-list*     (erfi:normalize-strings-length
-;;                                 (mapcar (cut 'format "%s" <>) line-list) 'right 4))
-;;                (column-list*   (erfi:normalize-strings-length
-;;                                 (mapcar (cut 'format "%s" <>) column-list) 'right 3))
-;;                (buf-name-list* (erfi:normalize-strings-length buf-name-list 'left 8))
-;;                (padding (erfi:circular-list "  "))
-;;                (str-list (erfi:map 'concat
-;;                                    indicator-list
-;;                                    padding branch-str-list
-;;                                    padding line-list*
-;;                                    padding column-list*
-;;                                    padding buf-name-list*
-;;                                    padding text-list)))
-;;           (erfi:map 'cons str-list node-list))))))
-;; (defun helm-jumar:make-candidates (tree &optional focus-type focused-node)
-;;   "FOCUS-TYPE := 'first | 'center | nil"
-;;   (destructuring-bind (node-list* current-index*) (jumar:tree-breadcrumbs+index tree 'identity)
-;;     (destructuring-bind (node-list current-index)
-;;         (if (not *helm-jumar-candidate-number-limit*)
-;;             `(,node-list* ,currnet-index*)
-;;             (destructuring-bind (a b) *helm-jumar-candidate-number-limit*
-;;               (let* ((focus-index (or (and focus-type
-;;                                            (erfi:list-index (cut eq focused-node <>) node-list*))
-;;                                       current-index*))
-;;                      (d (erfi:case focus-type
-;;                           ((first)      focus-index)
-;;                           ((center nil) (max 0 (- focus-index (+ a 1)))))))
-;;                 `(,(erfi:$ erfi:take* <> (+ a b 1) $ erfi:drop node-list* d)
-;;                   ,(- current-index* d)))))
-;;       (destructuring-bind (buf-name-list line-list column-list text-list)
-;;           (erfi:unzip4
-;;            (mapcar (erfi:$ cdddr $ jumar:jumarker->position-datum $ jumar:node-content $)
-;;                    node-list))
-;;         (let* ((indicator-list (if (wholenump current-index)
-;;                                    `(,@(make-list current-index " ") "*" ,@(erfi:circular-list " "))
-;;                                    (erfi:circular-list " ")))
-;;                (branch-str-list (mapcar 'jumar:node->branch-string node-list))
-;;                (line-list*     (erfi:normalize-strings-length
-;;                                 (mapcar (cut 'format "%s" <>) line-list) 'right 4))
-;;                (column-list*   (erfi:normalize-strings-length
-;;                                 (mapcar (cut 'format "%s" <>) column-list) 'right 3))
-;;                (buf-name-list* (erfi:normalize-strings-length buf-name-list 'left 8))
-;;                (padding (erfi:circular-list "  "))
-;;                (str-list (erfi:map 'concat
-;;                                    indicator-list
-;;                                    padding branch-str-list
-;;                                    padding line-list*
-;;                                    padding column-list*
-;;                                    padding buf-name-list*
-;;                                    padding text-list)))
-;;           (erfi:map 'cons str-list node-list))))))
-;; (defun helm-jumar:make-candidates (tree &optional focus-type focused-node)
-;;   "FOCUS-TYPE := 'first | 'center | nil"
-;;   (destructuring-bind (node-list current-index)
-;;       (destructuring-bind (n-list c-index) (jumar:tree-breadcrumbs+index tree 'identity)
-;;         (if (not *helm-jumar-candidate-number-limit*)
-;;             `(,n-list ,currnet-index*)
-;;             (destructuring-bind (a b) *helm-jumar-candidate-number-limit*
-;;               (let* ((focus-index (or (and focus-type
-;;                                            (erfi:list-index (cut eq focused-node <>) n-list))
-;;                                       c-index))
-;;                      (d (erfi:case focus-type
-;;                           ((first)      focus-index)
-;;                           ((center nil) (max 0 (- focus-index (+ a 1)))))))
-;;                 `(,(erfi:$ erfi:take* <> (+ a b 1) $ erfi:drop n-list d)
-;;                   ,(- c-index d))))))
-;;     (destructuring-bind (buf-name-list line-list column-list text-list)
-;;         (erfi:unzip4 (mapcar (erfi:$ cdddr $ jumar:jumarker->position-datum $ jumar:node-content $)
-;;                              node-list))
-;;       (let* ((indicator-list (if (wholenump current-index)
-;;                                  `(,@(make-list current-index " ") "*" ,@(erfi:circular-list " "))
-;;                                  (erfi:circular-list " ")))
-;;              (branch-str-list (mapcar 'jumar:node->branch-string node-list))
-;;              (line-list*     (erfi:normalize-strings-length
-;;                               (mapcar (cut 'format "%s" <>) line-list) 'right 4))
-;;              (column-list*   (erfi:normalize-strings-length
-;;                               (mapcar (cut 'format "%s" <>) column-list) 'right 3))
-;;              (buf-name-list* (erfi:normalize-strings-length buf-name-list 'left 8))
-;;              (padding (erfi:circular-list "  "))
-;;              (str-list (erfi:map 'concat
-;;                                  indicator-list
-;;                                  padding branch-str-list
-;;                                  padding line-list*
-;;                                  padding column-list*
-;;                                  padding buf-name-list*
-;;                                  padding text-list)))
-;;         (erfi:map 'cons str-list node-list)))))
-
 
 (defun helm-jumar:make-candidates (tree &optional focus-type focused-node)
   "FOCUS-TYPE := 'first | 'center | nil"
@@ -1390,7 +1241,6 @@ not string."
    (matchplugin :initform nil)
    (persistent-action :initform 'helm-jumar-persistent-action)
    (keymap :initform helm-jumar-map)
-;   (mode-line :initform helm-buffer-mode-line-string)
    (persistent-help
     :initform
     "Peep this jumarker / C-u \\[helm-execute-persistent-action]: Delete this jumarker")))
@@ -1405,7 +1255,6 @@ not string."
    (matchplugin :initform nil)
    (persistent-action :initform 'helm-jumar-persistent-action)
    (keymap :initform helm-jumar-map)
-;   (mode-line :initform helm-buffer-mode-line-string)
    (persistent-help
     :initform
     "Peep this jumarker / C-u \\[helm-execute-persistent-action]: Delete this jumarker")))
@@ -1608,62 +1457,6 @@ This is patched for non-string REAL."
       (with-current-buffer (pop *jumar-misc-hl-buffers*)
         (hl-line-mode -1)))
     (remove-hook 'pre-command-hook 'jumar-misc-hl-turn-off/pre-command-hook)))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-;; TODO:
-;;   changing branch in helm   : done
-;;   recenter in helm          : done
-;;   defcustom for vars        : almost done
-;;   line text preview in helm : almost done
-;;   no preview if unavailable : done
-;;   changing buffer invoked   : fixed
-;;   reopen file               : done
-;;   quota of size of tree     : done
-;;   fast quota                : done?  I feel it is not very fast but there's no idea.
-;;   tree and list             : done
-;;   helm-quit should restore original trees (ignore changing branches in the session)
-;;   smart filtering           : 
-;;   smart filtering in helm   : 
-;;   parge visualizer          : need adding hooks to use visualizer
-;;   take -> take*             : done
-;;   code move to ERFI         : done
-;;   Persistency               : need research how vim treat it with per-window
-;;   Register of markers       : pending until there's needs
-;;   Per-buffer/per-window     : need a new feature in ERFI for window-local-variables
-;;   Evil interface            : need research
-;;   auto hook-level           : 
-;;   str hash to integr/helm   : 
-;;   restore rule "root iff"   : done
-;;   re-fontify for preview    : really necessary?
-;;   ref-count of jumarker     : 
-;;   Change jumar:tree-root?
-
-
-
-;; Helm refactoring note
-;; `helm--next-or-previous-line` calls `helm-move-selection-common` multiple time.
-;; But this function `helm-mark-current-line`.  This forces `helm--next-or-previous-line`
-;; to be a "user command".
-;; 
-;; 
-;; 
-;; 
-;; 
-;; 
-;; memo: `no-other-window'
 
 
 (provide 'jumar)
