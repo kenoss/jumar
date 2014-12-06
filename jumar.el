@@ -1424,7 +1424,7 @@ This is patched for non-string REAL."
 
 
 (defun helm-jumar-jumarkers ()
-  ""
+  "Preconfigured `helm' for jump to jumarkers."
   (interactive)
   (helm-jumar:with-temporary-patch
    (helm :sources '(helm-source-jumarkers-tree)

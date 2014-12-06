@@ -100,7 +100,7 @@ If PREFIX is non-nil, invert SYM ('tree <-> 'list).
                              (lwarn 'jumar :error "dwin :current-set is unavailable.")
                              (error "dwin :current-set is unavailable.")))))))
 
-(defun jumar-dwin-add-marker (prefix)
+(defun jumar-dwin-add-marker (&optional prefix)
   (interactive "P")
   (let1 sym (cdr (assq :add-set jumar-dwin-action-control-alist))
     (erfi:ecase sym
@@ -164,19 +164,19 @@ Side effect: if jump success, set current node of SET to that one."
                       (jumar:jumarker-goto (jumar:node-content next))
                       (jumar:message (concat msg "Jumped!"))))))))))
 
-(defun jumar-dwin-jump-current (prefix)
+(defun jumar-dwin-jump-current (&optional prefix)
   (interactive "P")
   (let1 set (jumar-dwin:get-jm-set (cdr (assq :jump-set jumar-dwin-action-control-alist)) prefix)
     (jumar-dwin:jump:aux set 0)
     (run-hooks 'jumar-post-jump-hook)))
 
-(defun jumar-dwin-jump-forward (prefix)
+(defun jumar-dwin-jump-forward (&optional prefix)
   (interactive "P")
   (let1 set (jumar-dwin:get-jm-set (cdr (assq :jump-set jumar-dwin-action-control-alist)) prefix)
     (jumar-dwin:jump:aux set +1)
     (run-hooks 'jumar-post-jump-hook)))
 
-(defun jumar-dwin-jump-backward (prefix)
+(defun jumar-dwin-jump-backward (&optional prefix)
   (interactive "P")
   (let1 set (jumar-dwin:get-jm-set (cdr (assq :jump-set jumar-dwin-action-control-alist)) prefix)
     (jumar-dwin:jump:aux set -1)
@@ -197,8 +197,8 @@ Side effect: if jump success, set current node of SET to that one."
     (helm-jumar:preselect-with-real *helm-jumar-dwin-update-preselect-node* 'eq t)
     (setq *helm-jumar-dwin-update-enabled* nil)))
 
-(defun helm-jumar-dwin-jumarkers (prefix)
-  ""
+(defun helm-jumar-dwin-jumarkers (&optional prefix)
+  "DWIN version preconfigured `helm' for jump to jumarkers."
   (interactive "P")
   (dynamic-let
       ((*helm-jumar-dwin-update-enabled* t)
