@@ -110,7 +110,8 @@ If PREFIX is non-nil, invert SYM ('tree <-> 'list).
       ((both)
        ;; TODO: ref-count
        (funcall (jumar-dwin:get-add-function 'tree nil) *jumar:jm-tree* (jumar:make-jumarker) t)
-       (funcall (jumar-dwin:get-add-function 'list nil) *jumar:jm-list* (jumar:make-jumarker) t)))))
+       (funcall (jumar-dwin:get-add-function 'list nil) *jumar:jm-list* (jumar:make-jumarker) t)))
+    (jumar:message "Add marker.")))
 
 (defun jumar:node-nth-child (node n)
   "Return list (next-node rest).  Here,
