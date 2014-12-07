@@ -1160,24 +1160,7 @@ not string."
                                  res))))))))))))
 
 
-;;; Sources
-
-(defvar helm-jumar-map
-  (rlet1 map (make-sparse-keymap)
-    (set-keymap-parent map helm-map)
-    (define-key map (kbd "C-f") 'helm-jumar-run-forward-branch)
-    (define-key map (kbd "C-b") 'helm-jumar-run-backward-branch)
-    (define-key map (kbd "C-r") 'helm-jumar-run-recenter)
-    (define-key map (kbd "C-c d") 'helm-jumar-run-delete-marked-nodes)
-    (define-key map (kbd "C-c D") 'helm-jumar-run-delete-nodes-below)
-    ))
-
-(defvar *helm-jumar-candidate-number-limit* nil "[internal] Initialized by `jumar-init'.")
-(defvar *helm-jumar-jumarkers-tree-cache* nil)
-(defvar *helm-jumar-jumarkers-list-cache* nil)
-(defvar *helm-jumar-tree-next-candidate-focus* nil)
-(defvar *helm-jumar-list-next-candidate-focus* nil)
-
+;;; Making candidate list
 
 (defun helm-jumar:make-candidates (tree &optional focus-type focused-node)
   "FOCUS-TYPE := 'first | 'center | nil"
@@ -1220,55 +1203,74 @@ not string."
                                padding text-list)
         (erfi:map 'cons str-list node-list)))))
 
-;; Jumarkers
-(defclass helm-type-jumarker (helm-source) ()
-  "A class to define type jumar.")
+;;; Sources
+(eval-after-load "helm"
+  '(progn
+     (defvar *helm-jumar-candidate-number-limit* nil "[internal] Initialized by `jumar-init'.")
+     (defvar *helm-jumar-jumarkers-tree-cache* nil)
+     (defvar *helm-jumar-jumarkers-list-cache* nil)
+     (defvar *helm-jumar-tree-next-candidate-focus* nil)
+     (defvar *helm-jumar-list-next-candidate-focus* nil)
 
-(defmethod helm--setup-source :before ((source helm-type-jumarker))
-  (oset source :action (helm-make-actions
-                        "Jump to marker" 'helm-jumar-jump/set-current
-                        "Delete marker(s)" 'helm-jumar-delete-marked-nodes
-                        "Delete markers below" 'helm-jumar-delete-nodes-below
-                        "Forward branch" 'helm-jumar-forward-branch
-                        "Backward branch" 'helm-jumar-backward-branch
-                        ))
-  (oset source :persistent-help "Peep this marker.")
-  (oset source :filtered-candidate-transformer '()))
+     (defvar helm-jumar-map
+       (rlet1 map (make-sparse-keymap)
+         (set-keymap-parent map helm-map)
+         (define-key map (kbd "C-f") 'helm-jumar-run-forward-branch)
+         (define-key map (kbd "C-b") 'helm-jumar-run-backward-branch)
+         (define-key map (kbd "C-r") 'helm-jumar-run-recenter)
+         (define-key map (kbd "C-c d") 'helm-jumar-run-delete-marked-nodes)
+         (define-key map (kbd "C-c D") 'helm-jumar-run-delete-nodes-below)
+         ))
 
-(defclass helm-source-jumarkers-tree-recipe (helm-source-sync helm-type-jumarker)
-  ((init :initform (lambda ()
-                     (setq *helm-jumar-jumarkers-tree-cache*
-                           (apply 'helm-jumar:make-candidates
-                                  *jumar:jm-tree* *helm-jumar-tree-next-candidate-focus*))
-                     (setq *helm-jumar-tree-next-candidate-focus* nil)))
-   (candidates :initform *helm-jumar-jumarkers-tree-cache*)
-   (matchplugin :initform nil)
-   (persistent-action :initform 'helm-jumar-persistent-action)
-   (keymap :initform helm-jumar-map)
-   (persistent-help
-    :initform
-    "Peep this jumarker / C-u \\[helm-execute-persistent-action]: Delete this jumarker")))
+     (defclass helm-type-jumarker (helm-source) ()
+       "A class to define type jumar.")
 
-(defclass helm-source-jumarkers-list-recipe (helm-source-sync helm-type-jumarker)
-  ((init :initform (lambda ()
-                     (setq *helm-jumar-jumarkers-list-cache*
-                           (apply 'helm-jumar:make-candidates
-                                  *jumar:jm-list* *helm-jumar-list-next-candidate-focus*))
-                     (setq *helm-jumar-list-next-candidate-focus* nil)))
-   (candidates :initform *helm-jumar-jumarkers-list-cache*)
-   (matchplugin :initform nil)
-   (persistent-action :initform 'helm-jumar-persistent-action)
-   (keymap :initform helm-jumar-map)
-   (persistent-help
-    :initform
-    "Peep this jumarker / C-u \\[helm-execute-persistent-action]: Delete this jumarker")))
+     (defmethod helm--setup-source :before ((source helm-type-jumarker))
+       (oset source :action (helm-make-actions
+                             "Jump to marker" 'helm-jumar-jump/set-current
+                             "Delete marker(s)" 'helm-jumar-delete-marked-nodes
+                             "Delete markers below" 'helm-jumar-delete-nodes-below
+                             "Forward branch" 'helm-jumar-forward-branch
+                             "Backward branch" 'helm-jumar-backward-branch
+                             ))
+       (oset source :persistent-help "Peep this marker.")
+       (oset source :filtered-candidate-transformer '()))
 
-;; These names are very important in the current implementation.
-;; See `helm-jumar:source->jm-set-type'.
-(defvar helm-source-jumarkers-tree
-  (helm-make-source "Jumarkers in tree" 'helm-source-jumarkers-tree-recipe))
-(defvar helm-source-jumarkers-list
-  (helm-make-source "Jumarkers in list" 'helm-source-jumarkers-list-recipe))
+     (defclass helm-source-jumarkers-tree-recipe (helm-source-sync helm-type-jumarker)
+       ((init :initform (lambda ()
+                          (setq *helm-jumar-jumarkers-tree-cache*
+                                (apply 'helm-jumar:make-candidates
+                                       *jumar:jm-tree* *helm-jumar-tree-next-candidate-focus*))
+                          (setq *helm-jumar-tree-next-candidate-focus* nil)))
+        (candidates :initform *helm-jumar-jumarkers-tree-cache*)
+        (matchplugin :initform nil)
+        (persistent-action :initform 'helm-jumar-persistent-action)
+        (keymap :initform helm-jumar-map)
+        (persistent-help
+         :initform
+         "Peep this jumarker / C-u \\[helm-execute-persistent-action]: Delete this jumarker")))
+
+     (defclass helm-source-jumarkers-list-recipe (helm-source-sync helm-type-jumarker)
+       ((init :initform (lambda ()
+                          (setq *helm-jumar-jumarkers-list-cache*
+                                (apply 'helm-jumar:make-candidates
+                                       *jumar:jm-list* *helm-jumar-list-next-candidate-focus*))
+                          (setq *helm-jumar-list-next-candidate-focus* nil)))
+        (candidates :initform *helm-jumar-jumarkers-list-cache*)
+        (matchplugin :initform nil)
+        (persistent-action :initform 'helm-jumar-persistent-action)
+        (keymap :initform helm-jumar-map)
+        (persistent-help
+         :initform
+         "Peep this jumarker / C-u \\[helm-execute-persistent-action]: Delete this jumarker")))
+
+     ;; These names are very important in the current implementation.
+     ;; See `helm-jumar:source->jm-set-type'.
+     (defvar helm-source-jumarkers-tree
+       (helm-make-source "Jumarkers in tree" 'helm-source-jumarkers-tree-recipe))
+     (defvar helm-source-jumarkers-list
+       (helm-make-source "Jumarkers in list" 'helm-source-jumarkers-list-recipe))
+     ))
 
 
 ;;; Fundamental functions called in Helm session
