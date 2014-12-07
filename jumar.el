@@ -210,7 +210,7 @@ To make disable preview, use the variable `jumar-preview-text-length-limit'."
 ;;   (jumar:node<= ROOT CURRENT) is t.
 ;;   (memq (jumar:tree-current tree) (jumar:tree-breadcrumbs tree)) is non-nil.
 ;;   (and (<= 2 (car QUOTA)) (<= (car QUOTA) (cadr QUOTA))) is t.
-;;   If non-nil, REDUCE-SIZE-FUNCITON behaves like `jumar-default-reduce-tree-ansize'.
+;;   If non-nil, REDUCE-SIZE-FUNCITON behaves like `jumar-default-reduce-tree-size'.
 ;;   Note that it is not guaranteed that SIZE is less than or equal to (cadr QUOTA) .
 
 
@@ -1390,7 +1390,7 @@ Note that this change is not temporary in Helm session."
         (helm-jumar:preselect-with-real next-preselect 'eq t)))))
 
 
-;;; Preconfigured helm interface
+;;; Preconfigured Helm interface
 
 ;; This is temporary patch to use non-string values for REAL of (DISPLAY . REAL) pairs in helm.
 ;; Currently, we cannot use this type value for REAL because these are compared with `string='

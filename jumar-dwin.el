@@ -185,7 +185,7 @@ Side effect: if jump success, set current node of SET to that one."
 
 
 ;;;
-;;; DWIN helm UI
+;;; DWIN Helm UI
 ;;;
 
 (defvar *helm-jumar-dwin-update-enabled* nil)
