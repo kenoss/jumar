@@ -11,6 +11,7 @@ gives more rich "marker" environment.
 
 - Emacs 24 or later
 - ERFI (https://github.com/kenoss/erfi)
+- Helm (If one use visualizer.  Recent version is prefered.)
 
 
 ## Instration
@@ -32,6 +33,7 @@ Add the following code to your `.emacs` file:
 ```emacs-lisp
 (require 'jumar)
 (require 'jumar-dwin)
+(require 'helm)  ; if you use visualizer.
 
 ;; If one needs highlight the line after jump.
 (add-hook 'jumar-post-jump-hook 'jumar-misc-hl-turn-on-until-next-command)
