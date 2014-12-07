@@ -1419,31 +1419,6 @@ Note that this change is not temporary in Helm session."
 
 
 ;;;
-;;; Misc
-;;;
-
-(require 'hl-line)
-
-(defvar *jumar-misc-hl-buffers* nil)
-
-(defun jumar-misc-hl-turn-on-until-next-command ()
-  "Turn on highlight mode until next command."
-  (progn
-    (unless hl-line-mode
-      (push (current-buffer) *jumar-misc-hl-buffers*))
-    (hl-line-mode +1)
-    (add-hook 'pre-command-hook 'jumar-misc-hl-turn-off/pre-command-hook)))
-
-(defun jumar-misc-hl-turn-off/pre-command-hook ()
-  (progn
-    (while *jumar-misc-hl-buffers*
-      (with-current-buffer (pop *jumar-misc-hl-buffers*)
-        (hl-line-mode -1)))
-    (remove-hook 'pre-command-hook 'jumar-misc-hl-turn-off/pre-command-hook)))
-
-
-
-;;;
 ;;; Initialization for ordinary users
 ;;;
 
