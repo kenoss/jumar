@@ -95,13 +95,13 @@ except for the case that is the last/first one.
 
 ### Commands in Helm session
 
-| Key       | Command                          | Guide on `C-i` (`helm-select-action`) | Description                                        |
-| --------- | -------------------------------- | ------------------------------------- | -------------------------------------------------- |
-| `Enter`   | `helm-jumar-jump/set-current`    | Jump to marker                        | Set selected marker to the current and jump        |
-| `C-z`     | `helm-jumar-persistent-action`   |                                       | Peep marker on the current line                    |
-| `C-u C-z` | `helm-jumar-persistent-action`   |                                       | Delete marker on the current line                  |
-| `C-c d`   | `helm-jumar-delete-nodes-below`  | Delete markers below                  | Delete markers under the current line              |
-| `C-c k`   | `helm-jumar-delete-marked-nodes` | Delete marker(s)                      | Delete marked markers                              |
-| `M-f`     | `helm-jumar-forward-branch`      | Forward branch                        | Change branch forward                              |
-| `M-b`     | `helm-jumar-backward-branch`     | Backward branch                       | Change branch backward                             |
-| `C-r`     | `helm-jumar-run-recenter`        |                                       | Redisplay candidates with selected marker centered |
+| Key       / Guide on `C-i` (`helm-select-action`) | Command                          | Description                                        |
+| ------------------------------------------------- | -------------------------------- | -------------------------------------------------- |
+| `Enter`   / Jump to marker                        | `helm-jumar-jump/set-current`    | Set selected marker to the current and jump        |
+| `C-z`                                             | `helm-jumar-persistent-action`   | Peep marker on the current line                    |
+| `C-u C-z`                                         | `helm-jumar-persistent-action`   | Delete marker on the current line                  |
+| `C-c d`   / Delete markers below                  | `helm-jumar-delete-nodes-below`  | Delete markers under the current line              |
+| `C-c k`   / Delete marker(s)                      | `helm-jumar-delete-marked-nodes` | Delete marked markers                              |
+| `M-f`     / Forward branch                        | `helm-jumar-forward-branch`      | Change branch forward                              |
+| `M-b`     / Backward branch                       | `helm-jumar-backward-branch`     | Change branch backward                             |
+| `C-r`                                             | `helm-jumar-run-recenter`        | Redisplay candidates with selected marker centered |
