@@ -41,7 +41,8 @@ Add the following code to your `.emacs` file:
 (require 'helm)  ; if you use visualizer.
 
 ;; If one needs highlight the line after jump.
-(add-hook 'jumar-post-jump-hook 'jumar-misc-hl-turn-on-until-next-command)
+(require 'erfi-emacs)
+(add-hook 'jumar-post-jump-hook 'erfi-emacs-hl-turn-on-until-next-command)
 
 (jumar-dwin-use-preconfigured-scheme 'list+history)
 (jumar-init)
