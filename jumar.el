@@ -1215,8 +1215,8 @@ not string."
          (define-key map (kbd "C-f") 'helm-jumar-run-forward-branch)
          (define-key map (kbd "C-b") 'helm-jumar-run-backward-branch)
          (define-key map (kbd "C-r") 'helm-jumar-run-recenter)
-         (define-key map (kbd "C-c d") 'helm-jumar-run-delete-marked-nodes)
-         (define-key map (kbd "C-c D") 'helm-jumar-run-delete-nodes-below)
+         (define-key map (kbd "C-c d") 'helm-jumar-run-delete-nodes-below)
+         (define-key map (kbd "C-c k") 'helm-jumar-run-delete-marked-nodes)
          ))
 
      (defclass helm-type-jumarker (helm-source) ()
