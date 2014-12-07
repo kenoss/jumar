@@ -1394,50 +1394,14 @@ Note that this change is not temporary in Helm session."
 
 ;;; Preconfigured Helm interface
 
-;; This is temporary patch to use non-string values for REAL of (DISPLAY . REAL) pairs in helm.
-;; Currently, we cannot use this type value for REAL because these are compared with `string='
-;; in `helm-revive-visible-mark'.  This causes an error when one mark multiple items and
-;; invoke `helm-select-action' and then select a command like `helm-jumar-delete-marked-nodes'.
-;; (I think it is natural and easy that helm admit such use of REAL.)
-;; This use of `flet' is allowed by author of helm, but I will add string hash layer in the future
-;; release.
-;; For more details, see https://github.com/emacs-helm/helm/issues/706#issuecomment-64076668 .
-(defmacro helm-jumar:with-temporary-patch (&rest body)
-  `(flet ((helm-revive-visible-mark ()
-           "Restore marked candidates when helm update display.
-
-This is patched for non-string REAL."
-           (with-current-buffer helm-buffer
-             (cl-dolist (o helm-visible-mark-overlays)
-                        (goto-char (point-min))
-                        (while (and (search-forward (overlay-get o 'string) nil t)
-                                    (helm-current-source-name= (overlay-get o 'source)))
-                          ;; Calculate real value of candidate.
-                          ;; It can be nil if candidate have only a display value.
-                          (let ((real (get-text-property (point-at-bol 0) 'helm-realvalue)))
-                            (if real
-                                ;; Check if real value of current candidate is the same
-                                ;; that the one stored in overlay.
-                                (and (let1 real* (overlay-get o 'real)
-                                       (or (and (stringp real) (stringp real*)
-                                                (string= real real*))
-                                           ;; Here we use 'eq.
-                                           ;; This is intended only for `jumar:node'.
-                                           (eq real real*)))
-                                     (move-overlay o (point-at-bol 0) (1+ (point-at-eol 0))))
-                                (move-overlay o (point-at-bol 0) (1+ (point-at-eol 0))))))))))
-     ,@body))
-
-
 (defun helm-jumar-jumarkers ()
   "Preconfigured `helm' for jump to jumarkers."
   (interactive)
-  (helm-jumar:with-temporary-patch
-   (helm :sources '(helm-source-jumarkers-tree)
-         :buffer "*helm jumar*"
-         :keymap helm-jumar-map
-         :preselect "^\\*"
-         :truncate-lines t)))
+  (helm :sources '(helm-source-jumarkers-tree)
+        :buffer "*helm jumar*"
+        :keymap helm-jumar-map
+        :preselect "^\\*"
+        :truncate-lines t))
 
 
 

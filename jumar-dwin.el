@@ -212,11 +212,10 @@ Side effect: if jump success, set current node of SET to that one."
                     ((tree)      '(helm-source-jumarkers-tree))
                     ((list+tree) '(helm-source-jumarkers-list helm-source-jumarkers-tree))
                     ((tree+list) '(helm-source-jumarkers-tree helm-source-jumarkers-list)))
-      (helm-jumar:with-temporary-patch
-       (helm :sources sources
-             :buffer "*helm jumar*"
-             :keymap helm-jumar-map
-             :truncate-lines t)))))
+      (helm :sources sources
+            :buffer "*helm jumar*"
+            :keymap helm-jumar-map
+            :truncate-lines t))))
 
 
 
