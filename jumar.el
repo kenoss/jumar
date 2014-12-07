@@ -1189,7 +1189,7 @@ not string."
          (erfi:unzip4 (mapcar (erfi:$ cdddr $ jumar:jumarker->position-datum $ jumar:node-content $)
                               node-list)) ))
     (let ((indicator-list  (if (wholenump current-index)
-                               `(,@(make-list current-index " ") "*" ,@(erfi:circular-list " "))
+                               `(,@(make-list current-index " ") ">" ,@(erfi:circular-list " "))
                                (erfi:circular-list " ")))
           (branch-str-list (mapcar 'jumar:node->branch-string node-list))
           (line-list*      (erfi:normalize-strings-length (mapcar 'number-to-string line-list)
@@ -1409,7 +1409,7 @@ Note that this change is not temporary in Helm session."
   (helm :sources '(helm-source-jumarkers-tree)
         :buffer "*helm jumar*"
         :keymap helm-jumar-map
-        :preselect "^\\*"
+        :preselect "^>"
         :truncate-lines t))
 
 
