@@ -216,6 +216,40 @@ Side effect: if jump success, set current node of SET to that one."
             :keymap helm-jumar-map
             :truncate-lines t))))
 
+
+;;;
+;;; Advice for commands like tag jump
+;;;
+
+(defun jumar-dwin-advise-jump-command-to-add-jumarker (command-symbol)
+  "Advise \"jump\" command COMMAND-SYMBOL to add jumarker before/after jump.
+
+Before jump, add jumarker at the point unless the current jumarker is
+on the same line.
+After jump, add jumarker."
+  (eval `(defadvice ,command-symbol (around jumar activate)
+          "Add jumarker to go back original point.
+
+Before jump, add jumarker at the point unless the current jumarker is
+on the same line.
+After jump, add jumarker."
+          (progn
+            (let* ((sym (cdr (assq :add-set jumar-dwin-action-control-alist)))
+                   (sym (if (eq 'both sym)
+                            (cdr (assq :jump-set jumar-dwin-action-control-alist))
+                            sym))
+                   (jm-set (jumar-dwin:get-jm-set sym nil))
+                   (current (jumar:tree-current jm-set))
+                   (jm (and current (jumar:node-content current))))
+              (when (and current (eq 'available (jumar:jumarker-state jm)))
+                (let ((m (jumar:jumarker-marker jm)))
+                  (unless (and (eq (current-buffer) (marker-buffer m))
+                               (= (line-number-at-pos) (line-number-at-pos (marker-position m))))
+                    (jumar-dwin-add-marker)))))
+            ad-do-it
+            (jumar-dwin-add-marker)))
+        t))
+
 
 
 ;;;
