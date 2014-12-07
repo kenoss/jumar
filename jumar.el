@@ -57,7 +57,6 @@
 
 (require 'erfi-srfi-1)
 (require 'erfi-gauche)
-(require 'erfi-emacs)
 (require 'erfi-misc)
 
 
