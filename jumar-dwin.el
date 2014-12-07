@@ -46,7 +46,7 @@
 whose state is not 'available.  Otherwise try to reopen with
 `jumar-reopen-function'."
   :group 'jumar
-  :type 'bool)
+  :type 'boolean)
 
 
 

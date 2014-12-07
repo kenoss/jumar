@@ -70,10 +70,14 @@
   :group 'emacs)
 
 (defcustom jumar-jump-current-if-no-further-marker t
-  "If non-nil, jump jumarker of current node when there is no further jumarker.")
+  "If non-nil, jump jumarker of current node when there is no further jumarker."
+  :group 'jumar
+  :type 'boolean)
 
 (defcustom jumar-message-function 'message
-  "A function used in `jumar:message' to print messages.")
+  "A function used in `jumar:message' to print messages."
+  :group 'jumar
+  :type 'function)
 
 (defcustom jumar-reopen-file-function 'jumar-default-reopen-file
   "A function used to reopen file.  It is called in functions like
@@ -91,7 +95,7 @@ with `find-file-hook'.)"
 Sometimes it fails, for example, window size was changed, or jumarker was set
 by emacs lisp code."
   :group 'jumar
-  :type 'bool)
+  :type 'boolean)
 
 (defcustom jumar-revive-marker-function 'jumar-default-revive-marker
   "A function called to revive markers in killed or reverted buffers.
