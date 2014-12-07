@@ -55,8 +55,6 @@
   (require 'erfi-macros)
   (erfi:use-short-macro-name))
 
-(require 'cl)                           ; only for `flet'
-
 (require 'erfi-srfi-1)
 (require 'erfi-gauche)
 (require 'erfi-emacs)
