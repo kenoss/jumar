@@ -47,6 +47,11 @@ Add the following code to your `.emacs` file:
 (define-key global-map (kbd "C-,")     'jumar-dwin-jump-backward)
 (define-key global-map (kbd "C-.")     'jumar-dwin-jump-forward)
 (define-key global-map (kbd "C-x C-'") 'helm-jumar-dwin-jumarkers)
+
+;; As you need.  Advise jump commands, like `find-tag' and `gtags-find-tag',
+;; to add jumarker before/after jump.
+(jumar-dwin-advise-jump-command-to-add-jumarker 'find-tag)
+; (jumar-dwin-advise-jump-command-to-add-jumarker 'elisp-slime-nav-find-elisp-thing-at-point)
 ```
 
 For the first time, reload `.emacs` (or restart Emacs) and evaluate the following:
