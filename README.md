@@ -7,6 +7,11 @@ Jumar, standing for jump and marker like in Vim, is an extension of Emacs which
 gives more rich "marker" environment.
 
 
+### Short video
+
+http://recordit.co/jLoUv7oeW0
+
+
 ## Requirement
 
 - Emacs 24 or later
@@ -73,6 +78,30 @@ You can jump without helm.  `C-.` (`jumar-dwin-jump-forward`) is jump forward an
 
 Try to add new marker in other buffer, kill that buffer and invoke `C-x C-'`.  You can see
 "Killed buffer" at the last of list of markers.  Jumar automatically manage "unavailable markers".
-Jumping to that one try to reopen and revive marker positions in that buffer.
+Jumping to that one try to reopen file and revive marker positions in that buffer.
 By default, `jumar-dwin-jump-forward` and `jumar-dwin-jump-backward` skip unavailable markers
-except for the case that one is the last/first one.
+except for the case that is the last/first one.
+
+
+### Command overview (with above setting)
+
+| Key       | Command                     | Description                                 |
+| --------- | --------------------------- | ------------------------------------------- |
+| `C-'`     | `jumar-dwin-add-marker`     | Add marker                                  |
+| `C-"`     | `jumar-dwin-jump-current`   | Jump to the current marker                  |
+| `C-,`     | `jumar-dwin-jump-backward`  | Jump to previous marker                     |
+| `C-.`     | `jumar-dwin-jump-forward`   | Jump to next marker                         |
+| `C-x C-'` | `helm-jumar-dwin-jumarkers` | View markers with helm (and execute action) |
+
+### Commands in Helm session
+
+| Key       | Command                          | Guide on `C-i` (`helm-select-action`) | Description                                        |
+| --------- | -------------------------------- | ------------------------------------- | -------------------------------------------------- |
+| `Enter`   | `helm-jumar-jump/set-current`    | Jump to marker                        | Set selected marker to the current and jump        |
+| `C-z`     | `helm-jumar-persistent-action`   |                                       | Peep marker on the current line                    |
+| `C-u C-z` | `helm-jumar-persistent-action`   |                                       | Delete marker on the current line                  |
+| `C-c d`   | `helm-jumar-delete-nodes-below`  | Delete markers below                  | Delete markers under the current line              |
+| `C-c k`   | `helm-jumar-delete-marked-nodes` | Delete marker(s)                      | Delete marked markers                              |
+| `M-f`     | `helm-jumar-forward-branch`      | Forward branch                        | Change branch forward                              |
+| `M-b`     | `helm-jumar-backward-branch`     | Backward branch                       | Change branch backward                             |
+| `C-r`     | `helm-jumar-run-recenter`        |                                       | Redisplay candidates with selected marker centered |
