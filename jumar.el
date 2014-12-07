@@ -961,6 +961,11 @@ revive jumarkers in it.")
 (defvar *jumar:jm-list* (jumar:make-tree 'jumar:jumarker-delete nil 'jumar-reduce-list-tree-size))
 
 (defun jumar-init ()
+  "Initialize internal variables.
+User has to call this function after modifying variables below:
+
+  `helm-jumar-candidate-number-limit'
+  `helm-jumar-map'"
   (progn
     (setq *helm-jumar-candidate-number-limit*
           (let1 n-or-list helm-jumar-candidate-number-limit
@@ -972,7 +977,9 @@ revive jumarkers in it.")
                         (= 2 (length n-or-list)))
                    n-or-list)
                   (t
-                   (error "Wrong type: `helm-jumar-candidate-number-limit'")))))))
+                   (error "Wrong type: `helm-jumar-candidate-number-limit'")))))
+    (when (featurep 'helm)
+      (helm-jumar:reset-sourecs))))
 
 (defun jumar-default-reopen-file (file-path)
   (if (funcall jumar-y-or-n-p (format "Reopen %s?" file-path))
@@ -1263,10 +1270,15 @@ not string."
 
      ;; These names are very important in the current implementation.
      ;; See `helm-jumar:source->jm-set-type'.
-     (defvar helm-source-jumarkers-tree
-       (helm-make-source "Jumarkers in tree" 'helm-source-jumarkers-tree-recipe))
-     (defvar helm-source-jumarkers-list
-       (helm-make-source "Jumarkers in list" 'helm-source-jumarkers-list-recipe))
+     (defvar helm-source-jumarkers-tree nil)
+     (defvar helm-source-jumarkers-list nil)
+
+     (defun helm-jumar:reset-sourecs ()
+       (progn
+         (setq helm-source-jumarkers-tree
+               (helm-make-source "Jumarkers in tree" 'helm-source-jumarkers-tree-recipe))
+         (setq helm-source-jumarkers-list
+               (helm-make-source "Jumarkers in list" 'helm-source-jumarkers-list-recipe))))
      ))
 
 
@@ -1424,6 +1436,14 @@ Note that this change is not temporary in Helm session."
       (with-current-buffer (pop *jumar-misc-hl-buffers*)
         (hl-line-mode -1)))
     (remove-hook 'pre-command-hook 'jumar-misc-hl-turn-off/pre-command-hook)))
+
+
+
+;;;
+;;; Initialization for ordinary users
+;;;
+
+(jumar-init)
 
 
 (provide 'jumar)
