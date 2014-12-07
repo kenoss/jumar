@@ -1219,8 +1219,8 @@ not string."
      (defvar helm-jumar-map
        (rlet1 map (make-sparse-keymap)
          (set-keymap-parent map helm-map)
-         (define-key map (kbd "C-f") 'helm-jumar-run-forward-branch)
-         (define-key map (kbd "C-b") 'helm-jumar-run-backward-branch)
+         (define-key map (kbd "M-f") 'helm-jumar-run-forward-branch)
+         (define-key map (kbd "M-b") 'helm-jumar-run-backward-branch)
          (define-key map (kbd "C-r") 'helm-jumar-run-recenter)
          (define-key map (kbd "C-c d") 'helm-jumar-run-delete-nodes-below)
          (define-key map (kbd "C-c k") 'helm-jumar-run-delete-marked-nodes)
