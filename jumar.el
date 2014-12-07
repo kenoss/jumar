@@ -13,21 +13,25 @@
 
 ;; Jump and marker like in Vim, a tool to climb source code mountain.
 ;;
-;; This package provides another marker system.  Emacs's default mark is very
-;; restricted; it is buffer local; one cannot jump to a mark beyond current
-;; buffer; controlling marks is only available with mark ring.  This is not
-;; useful when current buffer frequently changes; for example, one may want to
-;; go back after tag jump.
+;; This package provides another marker enviroment.  Emacs's default mark(er) is
+;; very restricted; a lot of commands modify marks without asking and there's no
+;; option to control their behavior; controlling marks is only available with
+;; mark-ring and only non user frendly commands are provided; also `pop-tag-mark'
+;; does not allow bi-directional movement; global mark-ring discards inaccessible
+;; markers and one cannot jump with reopening that file; one cannot view marks
+;; while Vim provides `:jumps' command.
 ;;
 ;; A solution jumar proposes is as the following:
 ;;   - A new marker object `jumar:jumarker': It allows one to jump to points
 ;;     in other files.  Accessibility of buffers is automatically managed.
-;;   - By default, one can use tree and list as a set of jumarkers.
-;;     Simultaneous use is allowed.  Tree is like `undo-tree'; List is like
-;;     markers in Vim.
-;;   - For default UI, Helm is used: List of jumarkers are shown and user select
-;;     target and action; peep, jump and delete.  For tree of jumarkers,
-;;     one can change branches easily.
+;;     When file is reopened, observer try to revive jumarkers in that file.
+;;     One can jump to jumarker in killed file buffer.
+;;   - By default, one can use tree and list for set of jumarkers.  Simultaneous
+;;     use is allowed.  Tree is like `undo-tree'; List is like markers in Vim.
+;;     By default, some use cases are provided with DWIN commands.
+;;   - For default visualizer UI, Helm is used: User can look over sets of
+;;     jumarkers select target and action; peep, jump and delete.  For tree,
+;;     one can change branches easily.  (Use of visualiver is optional.)
 ;;
 ;; Jumar does not alter "mark" in Emacs, which is set many commands automatically.
 ;; Jumar is an environment to manage "marker", which users can use freely;
