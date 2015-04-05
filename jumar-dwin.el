@@ -1,9 +1,9 @@
-;;; jumar-dwin.el --- Preconfigured DWIN commands of jumar -*- lexical-binding: t -*-
+;;; jumar-dwin.el --- Preconfigured DWIN commands of jumar
 
 ;; Copyright (C) 2014  Ken Okada
 
 ;; Author: Ken Okada <keno.ss57@gmail.com>
-;; Keywords: convenience, emulations
+;; Keywords: tools, convenience, emulations
 ;; URL: https://github.com/kenoss/jumar
 ;; Package-Requires: ((emacs "24"))
 
@@ -340,4 +340,9 @@ SYM can be one of the following symbols:
 
 
 (provide 'jumar-dwin)
+
+;; Local Variables:
+;; lexical-binding: t
+;; End:
+
 ;;; jumar-dwin.el ends here

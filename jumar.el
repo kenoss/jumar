@@ -1,11 +1,12 @@
-;;; jumar.el --- Jump and marker like in Vim, with Helm interface. -*- lexical-binding: t -*-
+;;; jumar.el --- Jump and marker like in Vim, with Helm interface.
 
 ;; Copyright (C) 2014  Ken Okada
 
 ;; Author: Ken Okada <keno.ss57@gmail.com>
-;; Keywords: convenience, emulations
+;; Maintainer: Ken Okada <keno.ss57@gmail.com>
+;; Keywords: tools, convenience, emulations
 ;; URL: https://github.com/kenoss/jumar
-;; Package-Requires: ((emacs "24"))
+;; Package-Requires: ((emacs "24") (cl-lib "0.3") (erfi "0.1"))
 
 ;; Apache License, Version 2.0
 
@@ -1426,4 +1427,9 @@ Note that this change is not temporary in Helm session."
 
 
 (provide 'jumar)
+
+;; Local Variables:
+;; lexical-binding: t
+;; End:
+
 ;;; jumar.el ends here
