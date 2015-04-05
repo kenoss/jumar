@@ -19,7 +19,7 @@ http://recordit.co/jLoUv7oeW0
 - Helm (If one use visualizer.  Recent version is prefered.)
 
 
-## Instration
+## Installation
 
 Jumar is not available on MELPA but we'll apply to add.
 
