@@ -29,7 +29,7 @@
 ;;     One can jump to jumarker in killed file buffer.
 ;;   - By default, one can use tree and list for set of jumarkers.  Simultaneous
 ;;     use is allowed.  Tree is like `undo-tree'; List is like markers in Vim.
-;;     By default, some use cases are provided with DWIN commands.
+;;     By default, some use cases are provided with DWIM commands.
 ;;   - For default visualizer UI, Helm is used: User can look over sets of
 ;;     jumarkers select target and action; peep, jump and delete.  For tree,
 ;;     one can change branches easily.  (Use of visualiver is optional.)
