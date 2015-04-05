@@ -17,7 +17,7 @@
 ;;   `jumar:', `helm-jumar:' : Jumar internal.
 ;;   `jumar-', `helm-jumar-' : Public APIs, user commands and custom variables.
 ;;   `jumar-default-'        : Default functions for custom variables.
-;;   `*jumar:variables*'     : Internal variables danger to touch.
+;;   `jumar:*variables*'     : Internal variables danger to touch.
 ;;   `jumar-dwim:'           : Jumar internal.
 ;;   `jumar-dwim-', `helm-jumar-dwim' : Public APIs.
 
@@ -72,13 +72,13 @@ SYM := 'tree | 'list | 'current
 If PREFIX is non-nil, invert SYM ('tree <-> 'list).
 
 'tree or 'list:
-  Return the value of `*jumar:jm-tree*' or `*jumar:jm-list*'.
+  Return the value of `jumar:*jm-tree*' or `jumar:*jm-list*'.
 'current:
   Refer :current-set of `jumar-dwim-action-control-alist' and call this function
   once again."
   (erfi:ecase sym
-    ((tree)    (if (not prefix) *jumar:jm-tree* *jumar:jm-list*))
-    ((list)    (if (not prefix) *jumar:jm-list* *jumar:jm-tree*))
+    ((tree)    (if (not prefix) jumar:*jm-tree* jumar:*jm-list*))
+    ((list)    (if (not prefix) jumar:*jm-list* jumar:*jm-tree*))
     ((current) (jumar-dwim:get-jm-set
                 (or (cdr (assq :current-set jumar-dwim-action-control-alist))
                     (progn
@@ -110,8 +110,8 @@ If PREFIX is non-nil, invert SYM ('tree <-> 'list).
                 (jumar-dwim:get-jm-set sym prefix) (jumar:make-jumarker) t))
       ((both)
        ;; TODO: ref-count
-       (funcall (jumar-dwim:get-add-function 'tree nil) *jumar:jm-tree* (jumar:make-jumarker) t)
-       (funcall (jumar-dwim:get-add-function 'list nil) *jumar:jm-list* (jumar:make-jumarker) t)))
+       (funcall (jumar-dwim:get-add-function 'tree nil) jumar:*jm-tree* (jumar:make-jumarker) t)
+       (funcall (jumar-dwim:get-add-function 'list nil) jumar:*jm-list* (jumar:make-jumarker) t)))
     (jumar:message "Add marker.")))
 
 (defun jumar:node-nth-child (node n)

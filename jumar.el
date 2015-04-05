@@ -45,7 +45,7 @@
 ;;   `jumar:', `helm-jumar:' : Jumar internal.
 ;;   `jumar-', `helm-jumar-' : Public APIs, user commands and custom variables.
 ;;   `jumar-default-'        : Default functions for custom variables.
-;;   `*jumar:variables*'     : Internal variables danger to touch.
+;;   `jumar:*variables*'     : Internal variables danger to touch.
 
 ;;; Code:
 
@@ -554,11 +554,11 @@ This alikes `jumar:tree-delete-node!' with delete-below-flag t."
 
 
 ;;; Auxiliary function: counting nodes
-(defvar *jumar:node-count-nodes:counter* nil)
+(defvar jumar:*node-count-nodes:counter* nil)
 (defun jumar:node-count-nodes (node)
-  (dynamic-let ((*jumar:node-count-nodes:counter* 0))
-    (jumar:tree-for-each node (lambda (_) (incf *jumar:node-count-nodes:counter*)))
-    *jumar:node-count-nodes:counter*))
+  (dynamic-let ((jumar:*node-count-nodes:counter* 0))
+    (jumar:tree-for-each node (lambda (_) (incf jumar:*node-count-nodes:counter*)))
+    jumar:*node-count-nodes:counter*))
 
 
 ;;; Iterator
@@ -779,7 +779,7 @@ For example, if ROOT has less than or equal to LIMIT elements, return value is `
   ;; Probably it is due to compiler macro.  So we explicitely process optional arguments
   ;; as the constructor does.
   (rlet1 jm (jumar:make-jumarker:aux (or marker (point-marker)) (or winstart (window-start)))
-    (push jm *jumar:observed-jumarker-list*)))
+    (push jm jumar:*observed-jumarker-list*)))
 
 
 ;;; Deletion
@@ -787,7 +787,7 @@ For example, if ROOT has less than or equal to LIMIT elements, return value is `
   "Delete marker in JM.  It also unregister JM from observation list."
   (progn
     ;; TODO: use `delq'
-    (setq *jumar:observed-jumarker-list* (erfi:delete jm *jumar:observed-jumarker-list* 'eq))
+    (setq jumar:*observed-jumarker-list* (erfi:delete jm jumar:*observed-jumarker-list* 'eq))
     (when (eq 'available (jumar:jumarker-state jm))
       (set-marker (jumar:jumarker-marker jm) nil))))
 
@@ -924,7 +924,7 @@ Keys are :file-path, :buffer-name, :point, :winstart, :line, :column."
 
 
 ;;; Hooks
-(defvar *jumar:observed-jumarker-list* '()
+(defvar jumar:*observed-jumarker-list* '()
   "List of jumarkers observed to guarantee states of markers are correct.
 Kill or revert buffers makes those unavailable.  When file is reopend,
 revive jumarkers in it.")
@@ -932,7 +932,7 @@ revive jumarkers in it.")
 (defun jumar:jumarker-hook-kill-buffer ()
   "This guarantees state of jumarkers are correct."
   (let1 buf (current-buffer)
-    (dolist (jm *jumar:observed-jumarker-list*)
+    (dolist (jm jumar:*observed-jumarker-list*)
       (if-let1 marker (jumar:jumarker-marker jm)
         (when (eq buf (marker-buffer marker))
           (jumar:jumarker-change-state! jm 'unavailable))))))
@@ -941,14 +941,14 @@ revive jumarkers in it.")
 (defun jumar:jumarker-hook-before-revert ()
   "This guarantees state of jumarkers are correct."
   (let1 buf (current-buffer)
-    (dolist (jm *jumar:observed-jumarker-list*)
+    (dolist (jm jumar:*observed-jumarker-list*)
       (if-let1 marker (jumar:jumarker-marker jm)
         (when (eq buf (marker-buffer marker))
           (jumar:jumarker-change-state! jm 'reverting))))))
 (defun jumar:jumarker-hook-find-file ()
   "This guarantees state of jumarkers are correct."
   (let1 buf (current-buffer)
-    (dolist (jm *jumar:observed-jumarker-list*)
+    (dolist (jm jumar:*observed-jumarker-list*)
       (when (and (not (eq 'available (jumar:jumarker-state jm)))
                  (string= (cdr (assq :file-path (jumar:jumarker-saved-datum jm)))
                           (or (buffer-file-name buf) (buffer-name buf))))
@@ -962,8 +962,8 @@ revive jumarkers in it.")
 ;;; Core
 ;;;
 
-(defvar *jumar:jm-tree* (jumar:make-tree 'jumar:jumarker-delete))
-(defvar *jumar:jm-list* (jumar:make-tree 'jumar:jumarker-delete nil 'jumar-reduce-list-tree-size))
+(defvar jumar:*jm-tree* (jumar:make-tree 'jumar:jumarker-delete))
+(defvar jumar:*jm-list* (jumar:make-tree 'jumar:jumarker-delete nil 'jumar-reduce-list-tree-size))
 
 (defun jumar-init ()
   "Initialize internal variables.
@@ -995,7 +995,7 @@ User has to call this function after modifying variables below:
 
 
 ;;;
-;;; Very simple UI for *jumar:jm-tree*
+;;; Very simple UI for jumar:*jm-tree*
 ;;;
 
 (defvar jumar-post-jump-hook nil
@@ -1010,27 +1010,27 @@ User has to call this function after modifying variables below:
 (defun jumar-add-marker ()
   (interactive)
   (progn
-    (jumar:tree-enhance-downward! *jumar:jm-tree* (jumar:make-jumarker))
+    (jumar:tree-enhance-downward! jumar:*jm-tree* (jumar:make-jumarker))
 ;    (jumar:buffer-draw)
     (jumar:message "Add marker.")))
 (defun jumar-add-marker* ()
   (interactive)
   (progn
-    (jumar:tree-enhance-downward! *jumar:jm-tree* (jumar:make-jumarker) t)
+    (jumar:tree-enhance-downward! jumar:*jm-tree* (jumar:make-jumarker) t)
 ;    (jumar:buffer-draw)
     (jumar:message "Add marker.")))
 
 (defun jumar-add-marker/last ()
   (interactive)
   (progn
-    (jumar:tree-enhance-last! *jumar:jm-tree* (jumar:make-jumarker) nil)
+    (jumar:tree-enhance-last! jumar:*jm-tree* (jumar:make-jumarker) nil)
 ;    (jumar:buffer-draw)
     (jumar:message "Add marker.")))
 
 (defun jumar-add-marker/last* ()
   (interactive)
   (progn
-    (jumar:tree-enhance-last! *jumar:jm-tree* (jumar:make-jumarker) t)
+    (jumar:tree-enhance-last! jumar:*jm-tree* (jumar:make-jumarker) t)
 ;    (jumar:buffer-draw)
     (jumar:message "Add marker.")))
 
@@ -1046,27 +1046,27 @@ User has to call this function after modifying variables below:
 
 (defun jumar-jump-current ()
   (interactive)
-  (juamr-jump-current:aux *jumar:jm-tree*))
+  (juamr-jump-current:aux jumar:*jm-tree*))
 
 (defun jumar-jump-forward ()
   (interactive)
   (progn
-    (if-let1 current (jumar:tree-descend-current! *jumar:jm-tree*)
+    (if-let1 current (jumar:tree-descend-current! jumar:*jm-tree*)
       (jumar:jumarker-goto (jumar:node-content current))
       (progn
         (when jumar-jump-current-if-no-further-marker
-          (jumar:jumarker-goto (jumar:node-content (jumar:tree-current *jumar:jm-tree*))))
+          (jumar:jumarker-goto (jumar:node-content (jumar:tree-current jumar:*jm-tree*))))
         (jumar:message "No more marker forward.")))
     (run-hooks 'jumar-post-jump-hook)))
 
 (defun jumar-jump-backward ()
   (interactive)
   (progn
-    (if-let1 current (jumar:tree-ascend-current! *jumar:jm-tree*)
+    (if-let1 current (jumar:tree-ascend-current! jumar:*jm-tree*)
       (jumar:jumarker-goto (jumar:node-content current))
       (progn
         (when jumar-jump-current-if-no-further-marker
-          (jumar:jumarker-goto (jumar:node-content (jumar:tree-current *jumar:jm-tree*))))
+          (jumar:jumarker-goto (jumar:node-content (jumar:tree-current jumar:*jm-tree*))))
         (jumar:message "No more marker backward.")))
     (run-hooks 'jumar-post-jump-hook)))
 
@@ -1102,8 +1102,8 @@ User has to call this function after modifying variables below:
 
 (defun helm-jumar:source->jm-set (source)
   (erfi:ecase (helm-jumar:source->jm-set-type source)
-    ((tree) *jumar:jm-tree*)
-    ((list) *jumar:jm-list*)))
+    ((tree) jumar:*jm-tree*)
+    ((list) jumar:*jm-list*)))
 
 (defun helm-jumar:get-set-containing-node (node)
   (let1 jm-sets (mapcar 'helm-jumar:source->jm-set (helm-get-sources))
@@ -1249,7 +1249,7 @@ not string."
        ((init :initform (lambda ()
                           (setq *helm-jumar-jumarkers-tree-cache*
                                 (apply 'helm-jumar:make-candidates
-                                       *jumar:jm-tree* *helm-jumar-tree-next-candidate-focus*))
+                                       jumar:*jm-tree* *helm-jumar-tree-next-candidate-focus*))
                           (setq *helm-jumar-tree-next-candidate-focus* nil)))
         (candidates :initform *helm-jumar-jumarkers-tree-cache*)
         (matchplugin :initform nil)
@@ -1263,7 +1263,7 @@ not string."
        ((init :initform (lambda ()
                           (setq *helm-jumar-jumarkers-list-cache*
                                 (apply 'helm-jumar:make-candidates
-                                       *jumar:jm-list* *helm-jumar-list-next-candidate-focus*))
+                                       jumar:*jm-list* *helm-jumar-list-next-candidate-focus*))
                           (setq *helm-jumar-list-next-candidate-focus* nil)))
         (candidates :initform *helm-jumar-jumarkers-list-cache*)
         (matchplugin :initform nil)
