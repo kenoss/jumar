@@ -79,11 +79,12 @@ If PREFIX is non-nil, invert SYM ('tree <-> 'list).
   (erfi:ecase sym
     ((tree)    (if (not prefix) *jumar:jm-tree* *jumar:jm-list*))
     ((list)    (if (not prefix) *jumar:jm-list* *jumar:jm-tree*))
-    ((current) (erfi:$ jumar-dwim:get-jm-set <> prefix $
-                       (or (cdr (assq :current-set jumar-dwim-action-control-alist))
-                           (progn
-                             (lwarn 'jumar :error "dwim :current-set is unavailable.")
-                             (error "dwim :current-set is unavailable.")))))))
+    ((current) (jumar-dwim:get-jm-set
+                (or (cdr (assq :current-set jumar-dwim-action-control-alist))
+                    (progn
+                      (lwarn 'jumar :error "dwim :current-set is unavailable.")
+                      (error "dwim :current-set is unavailable.")))
+                prefix))))
 
 (defun jumar-dwim:get-add-function (sym prefix)
   (erfi:ecase sym
@@ -93,11 +94,12 @@ If PREFIX is non-nil, invert SYM ('tree <-> 'list).
     ((list)    (if (not prefix)
                    (cdr (assq :list-add-function jumar-dwim-action-control-alist))
                    (cdr (assq :tree-add-function jumar-dwim-action-control-alist))))
-    ((current) (erfi:$ jumar-dwim:get-add-function <> prefix $
-                       (or (cdr (assq :current-set jumar-dwim-action-control-alist))
-                           (progn
-                             (lwarn 'jumar :error "dwim :current-set is unavailable.")
-                             (error "dwim :current-set is unavailable.")))))))
+    ((current) (jumar-dwim:get-add-function
+                (or (cdr (assq :current-set jumar-dwim-action-control-alist))
+                    (progn
+                      (lwarn 'jumar :error "dwim :current-set is unavailable.")
+                      (error "dwim :current-set is unavailable.")))
+                prefix))))
 
 (defun jumar-dwim-add-marker (&optional prefix)
   (interactive "P")
