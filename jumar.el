@@ -731,7 +731,7 @@ For example, if ROOT has less than or equal to LIMIT elements, return value is `
                                  (n (jumar:tree-size tree)))
                      (if (<= n limit)
                          node
-                         (lp (jumar:node-child node (- n 1))))))
+                         (lp (jumar:node-child node) (- n 1)))))
     (jumar:tree-set-new-root! tree new-root)))
 
 
@@ -805,7 +805,7 @@ For example, if ROOT has less than or equal to LIMIT elements, return value is `
                 (concat "Type error: return value of `jumar-revive-marker-function'"
                         (format " must be an available marker or symbol 'broken: %s" m))))
        (if (eq m 'broken)
-           (jumar:jumarker-cahnge-state! jm 'broken)
+           (jumar:jumarker-change-state! jm 'broken)
            (prog1 t
              (setf (jumar:jumarker-marker jm) m)
              (setf (jumar:jumarker-state jm) 'available)
@@ -1046,7 +1046,7 @@ User has to call this function after modifying variables below:
 
 (defun jumar-jump-current ()
   (interactive)
-  (juamr-jump-current:aux jumar:*jm-tree*))
+  (jumar-jump-current:aux jumar:*jm-tree*))
 
 (defun jumar-jump-forward ()
   (interactive)
